@@ -4,6 +4,13 @@ export const Users: CollectionConfig = {
   slug: 'users',
   admin: {
     useAsTitle: 'email',
+    components: {
+      views: {
+        list: {
+          Component: '/views/CustomListView#CustomListView',
+        },
+      },
+    },
   },
   auth: true,
   fields: [

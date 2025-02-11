@@ -1,14 +1,10 @@
-// storage-adapter-import-placeholder
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
-import sharp from 'sharp'
 
 import { Users } from './collections/Users'
-import { Media } from './collections/Media'
+import { seed } from './seed'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -20,20 +16,17 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
-  editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  collections: [Users],
+  secret: 'secret',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: sqliteAdapter({
     client: {
-      url: process.env.DATABASE_URI || '',
+      url: 'file:./payload3-custom-list-view-bug.db',
     },
   }),
-  sharp,
-  plugins: [
-    payloadCloudPlugin(),
-    // storage-adapter-placeholder
-  ],
+  onInit: async (payload) => {
+    await seed(payload);
+  },
 })
